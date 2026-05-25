@@ -36,7 +36,7 @@ export default function GoogleCallbackPage() {
       }
 
       setAuth(payload)
-      router.replace("/onboarding")
+      router.replace("/dashboard")
     } catch {
       router.replace("/login")
     }

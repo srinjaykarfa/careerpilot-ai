@@ -34,6 +34,17 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
     () => user?.name ?? user?.email ?? "there",
     [user?.email, user?.name],
   )
+  const hideTopbar = pathname.startsWith("/dashboard/resume/builder")
+  const pageTitle = pathname.startsWith("/dashboard/resume")
+    ? pathname.startsWith("/dashboard/resume/builder")
+      ? "Resume Builder"
+      : "Resume"
+    : "Dashboard"
+  const pageSubtitle = pathname.startsWith("/dashboard/resume")
+    ? pathname.startsWith("/dashboard/resume/builder")
+      ? "Edit summary, experience, education, theme and font in real time"
+      : "Create, optimize and analyze your resume with AI"
+    : "Your AI workspace"
 
   if (!hydrated || !isAuthenticated) {
     return null
@@ -45,18 +56,21 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="relative flex min-h-screen">
         <Sidebar activePath={pathname} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <Topbar
-            title="Dashboard"
-            activePath={pathname}
-            userName={displayName}
-            userEmail={user?.email}
-            onLogout={() => {
-              logout()
-              router.replace("/login")
-            }}
-          />
+          {hideTopbar ? null : (
+            <Topbar
+              title={pageTitle}
+              subtitle={pageSubtitle}
+              activePath={pathname}
+              userName={displayName}
+              userEmail={user?.email}
+              onLogout={() => {
+                logout()
+                router.replace("/login")
+              }}
+            />
+          )}
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mx-auto w-full max-w-5xl">{children}</div>
+            <div className="mx-auto w-full max-w-7xl">{children}</div>
           </main>
         </div>
       </div>

@@ -46,7 +46,7 @@ function LoginForm() {
     form.clearErrors("root")
     try {
       await login(values)
-      router.push("/onboarding")
+      router.push("/dashboard")
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unable to sign in."
@@ -81,7 +81,7 @@ function LoginForm() {
       setAuth(event.data.payload)
       setIsGoogleLoading(false)
       window.removeEventListener("message", handleMessage)
-      router.push("/onboarding")
+      router.push("/dashboard")
     }
 
     window.addEventListener("message", handleMessage)

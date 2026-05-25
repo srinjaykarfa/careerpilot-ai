@@ -18,21 +18,22 @@ enum OnboardingStatus {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  password   String?
-  provider   String   @default("LOCAL")
-  googleId   String?  @unique
-  resetToken String?
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String?
+  provider      String    @default("LOCAL")
+  googleId      String?   @unique
+  resetToken    String?
   resetTokenExp DateTime?
 
-  onboardingSession OnboardingSession?
+  onboardingSession   OnboardingSession?
   onboardingResponses OnboardingResponse[]
-  careerProfile CareerProfile?
+  careerProfile       CareerProfile?
+  atsCheckHistory     AtsCheckHistory[]
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([resetToken])
 }
@@ -49,8 +50,8 @@ model OnboardingSession {
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 
-  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  responses     OnboardingResponse[]
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responses OnboardingResponse[]
 
   @@index([status])
 }
@@ -65,8 +66,8 @@ model OnboardingResponse {
   answer    String
   createdAt DateTime @default(now())
 
-  session   OnboardingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session OnboardingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -83,5 +84,25 @@ model CareerProfile {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AtsCheckHistory {
+  id              String   @id @default(uuid())
+  userId          String?
+  fileName        String
+  fileType        String
+  score           Int
+  summary         String
+  matchedKeywords Json
+  missingKeywords Json
+  sectionScores   Json
+  recommendations Json
+  jobDescription  String
+  createdAt       DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt])
 }
