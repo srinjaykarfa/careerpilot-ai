@@ -7,6 +7,7 @@ import { AiChatModule } from './modules/ai-chat/ai-chat.module';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './modules/users/users.module';
+import { ResumesModule } from './modules/resumes/resumes.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersModule } from './modules/users/users.module';
     UsersModule,
     AiChatModule,
     OnboardingModule,
+    ResumesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

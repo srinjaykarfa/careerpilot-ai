@@ -101,7 +101,7 @@ type SidebarProps = {
 
 function Sidebar({ activePath }: SidebarProps) {
   return (
-    <aside className="hidden h-screen w-72 border-r border-border/60 bg-background/80 p-5 backdrop-blur-xl dark:border-white/10 lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-72 border-r border-border/60 bg-background/80 p-5 backdrop-blur-xl dark:border-white/10 lg:flex">
       <SidebarContent activePath={activePath} />
     </aside>
   )

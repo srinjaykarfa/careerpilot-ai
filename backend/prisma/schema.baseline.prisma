@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String?
+  provider            String               @default("LOCAL")
+  googleId            String?              @unique
+  resetToken          String?
+  resetTokenExp       DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  atsCheckHistory     AtsCheckHistory[]
+  careerProfile       CareerProfile?
+  onboardingResponses OnboardingResponse[]
+  onboardingSession   OnboardingSession?
+
+  @@index([resetToken])
+}
+
+model OnboardingSession {
+  id            String               @id @default(uuid())
+  userId        String               @unique
+  status        OnboardingStatus     @default(IN_PROGRESS)
+  currentStep   String?
+  currentField  String?
+  memory        Json?
+  lastMessageAt DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  responses     OnboardingResponse[]
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+model OnboardingResponse {
+  id        String            @id @default(uuid())
+  sessionId String
+  userId    String
+  step      String?
+  field     String?
+  question  String
+  answer    String
+  createdAt DateTime          @default(now())
+  session   OnboardingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model CareerProfile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  summary    Json?
+  interests  Json?
+  skills     Json?
+  goals      Json?
+  education  Json?
+  experience Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AtsCheckHistory {
+  id              String   @id @default(uuid())
+  userId          String?
+  fileName        String
+  fileType        String
+  score           Int
+  summary         String
+  matchedKeywords Json
+  missingKeywords Json
+  sectionScores   Json
+  recommendations Json
+  jobDescription  String
+  createdAt       DateTime @default(now())
+  user            User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+enum OnboardingStatus {
+  IN_PROGRESS
+  COMPLETED
+}
